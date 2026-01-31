@@ -43,7 +43,7 @@
     "@nestjs/testing": "^10.3.9",
     "@types/express": "^4.17.21",
     "@types/jest": "29.5.12",
-    "@types/node": "^20.14.6",
+    "@types/node": "^22.5.5",
     "@types/supertest": "^6.0.2",
     "class-validator": "^0.14.1",
     "cpr": "^3.0.1",
