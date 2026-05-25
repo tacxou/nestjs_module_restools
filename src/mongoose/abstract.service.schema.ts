@@ -11,7 +11,8 @@ import {
 } from 'mongoose'
 import type { QueryFilter } from 'mongoose'
 import mongodb from 'mongodb'
-import { AbstractService, AbstractServiceContext } from '../_abstracts/abstract.service'
+import { AbstractService } from '../_abstracts/abstract.service'
+import type { AbstractServiceContext } from '../_abstracts/abstract.service'
 import { EventEmitterSeparator } from './constants/event-emitter.constant'
 import { ServiceSchemaInterface } from './interfaces/service-schema.interface'
 

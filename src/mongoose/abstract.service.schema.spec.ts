@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { HydratedDocument, Model, Types } from 'mongoose'
-import { AbstractServiceContext } from '../_abstracts/abstract.service'
+import type { AbstractServiceContext } from '../_abstracts/abstract.service'
 import { AbstractServiceSchema } from './abstract.service.schema'
 import { EventEmitterSeparator } from './constants/event-emitter.constant'
 
