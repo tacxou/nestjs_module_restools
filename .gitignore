@@ -1,6 +1,7 @@
 node_modules/
 coverage/
 dist/
+.tsbuildinfo
 
 yarn-debug.log*
 yarn-error.log*

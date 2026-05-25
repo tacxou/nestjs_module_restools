@@ -2,7 +2,10 @@
   "name": "@tacxou/nestjs_module_restools",
   "version": "1.0.1",
   "description": "Simple tools for NestJS framework and REST APIs",
-  "repository": "https://github.com/tacxou/nestjs_module_restools.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tacxou/nestjs_module_restools.git"
+  },
   "author": "tacxou <12997062+tacxou@users.noreply.github.com> (https://github.com/tacxou)",
   "contributors": [
     {
@@ -76,7 +79,8 @@
     "request-ip": "^3.3.0"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

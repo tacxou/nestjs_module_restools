@@ -17,8 +17,8 @@
     "incremental": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "tsBuildInfoFile": "dist/.tsbuildinfo"
+    "tsBuildInfoFile": ".tsbuildinfo"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.typetest.ts"]
+  "exclude": ["node_modules", "**/*.typetest.ts", "**/*.spec.ts"]
 }
