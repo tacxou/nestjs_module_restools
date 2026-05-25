@@ -22,6 +22,8 @@ export interface FilterSearchOptions {
   allowUnlimited?: boolean,
 }
 
+type ResolvedFilterSearchOptions = Required<typeof DEFAULT_SEARCH_OPTIONS>
+
 export interface SortOptions {
   [key: string]: 'asc' | 'desc' | 1 | -1
 }
@@ -33,7 +35,7 @@ export const DEFAULT_FILTER_OPTIONS = {
 }
 
 export interface FilterOptions {
-  limit: number
+  limit?: number
   skip: number
   sort: SortOptions
 }
@@ -46,36 +48,39 @@ export const SearchFilterOptions = createParamDecorator((options: FilterSearchOp
   try {
     return filterOptions(req.query, options)
   } catch (error) {
-    throw new BadRequestException(error.message)
+    throw new BadRequestException(error instanceof Error ? error.message : String(error))
   }
 })
 
 export function filterOptions(
-  queries: string | string[] | ParsedQs | ParsedQs[],
+  queries: ParsedQs,
   options?: FilterSearchOptions,
 ): FilterOptions {
-  options = { ...DEFAULT_SEARCH_OPTIONS, ...options }
-  let limit = parseInt(`${queries[options.limitKey]}`) || options.defaultLimit
-  if (limit === -1 && options.allowUnlimited) limit = undefined
-  let skip = parseInt(`${queries[options.skipKey]}`) || 0
+  const resolved = { ...DEFAULT_SEARCH_OPTIONS, ...options } as ResolvedFilterSearchOptions
+  let limit: number | undefined = parseInt(`${queries[resolved.limitKey]}`) || resolved.defaultLimit
+  if (limit === -1 && resolved.allowUnlimited) limit = undefined
+  let skip = parseInt(`${queries[resolved.skipKey]}`) || 0
 
-  if (queries[options.pageKey]) {
-    if (skip > 0) Logger.debug(`Both ${options.skipKey} and ${options.pageKey} are set. ${options.skipKey} will be ignored`, options.loggerType)
-    skip = (parseInt(`${queries[options.pageKey]}`) - 1) * limit
+  if (queries[resolved.pageKey]) {
+    if (skip > 0) Logger.debug(`Both ${resolved.skipKey} and ${resolved.pageKey} are set. ${resolved.skipKey} will be ignored`, resolved.loggerType)
+    skip = (parseInt(`${queries[resolved.pageKey]}`) - 1) * (limit ?? resolved.defaultLimit)
   }
 
-  const sort = {}
-  for (const key in <string[] | ParsedQs[]>queries[options.sortKey]) {
-    switch (`${queries[options.sortKey][key]}`.toLowerCase()) {
-      case '1':
-      case 'asc':
-        sort[key] = 1
-        break
+  const sort: SortOptions = {}
+  const sortQuery = queries[resolved.sortKey]
+  if (sortQuery && typeof sortQuery === 'object' && !Array.isArray(sortQuery)) {
+    for (const key in sortQuery as ParsedQs) {
+      switch (`${sortQuery[key]}`.toLowerCase()) {
+        case '1':
+        case 'asc':
+          sort[key] = 1
+          break
 
-      case '-1':
-      case 'desc':
-        sort[key] = -1
-        break
+        case '-1':
+        case 'desc':
+          sort[key] = -1
+          break
+      }
     }
   }
 

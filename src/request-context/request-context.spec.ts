@@ -3,18 +3,6 @@ import request from 'supertest'
 import { INestApplication } from '@nestjs/common'
 import { TestModule } from './_test/test.module'
 
-/*
-jest.mock('nestjs_module_restools', () => ({
- RequestContext: {
-  currentContext: {
-   req: {
-    user: { username: 'admin'},
-   },
-  },
- },
-}))
-*/
-
 describe('request-context', () => {
   let app: INestApplication
 

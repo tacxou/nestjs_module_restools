@@ -24,7 +24,8 @@ function createAuthGuard(type?: string | string[]): Type<CanActivate> {
     }
   }
 
-  const AuthGuard = AuthGuardInternal(Array.isArray(type) ? type : [type])
+  const strategies = type === undefined ? undefined : (Array.isArray(type) ? type : [type])
+  const AuthGuard = AuthGuardInternal(strategies)
 
   @Injectable()
   class MixinAuthGuard extends AuthGuard implements CanActivate {

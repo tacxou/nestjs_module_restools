@@ -4,16 +4,7 @@ import merge from 'deepmerge'
 import { Request } from 'express'
 import { ParsedQs } from 'qs'
 import { isPlainObject } from 'is-plain-object'
-
-let ObjectId: any
-(async () => {
-  try {
-    const mongooseModule = await import('mongoose')
-    ObjectId = mongooseModule.Types.ObjectId
-  } catch (error) {
-    Logger.debug(`Mongoose module not found`, SearchFilterSchema.name)
-  }
-})()
+import { Types } from 'mongoose'
 
 export const FILTER_SYMBOL_EQUAL = ':'
 export const FILTER_SYMBOL_GREATER = '>'
@@ -54,34 +45,41 @@ export interface FilterSchemaOptions {
   convertObjectId?: boolean
 }
 
+type ResolvedFilterSchemaOptions = Required<typeof DEFAULT_SCHEMA_OPTIONS>
+
 export interface FilterSchema {
   [key: string | number]: FilterSchema
 }
 
+const asFilterSchema = <T>(value: T): FilterSchema => value as unknown as FilterSchema
+
 /* istanbul ignore next */
 export const SearchFilterSchema = createParamDecorator((options: FilterSchemaOptions, ctx: ExecutionContext): FilterSchema => {
-  options = { ...DEFAULT_SCHEMA_OPTIONS, ...options }
+  const resolved = { ...DEFAULT_SCHEMA_OPTIONS, ...options } as ResolvedFilterSchemaOptions
   const req = ctx.switchToHttp().getRequest<Request>()
 
   try {
-    return filterSchema(req.query[options.queryKey], options)
+    return filterSchema(req.query[resolved.queryKey], resolved)
   } catch (error) {
-    throw new BadRequestException(error.message)
+    throw new BadRequestException(error instanceof Error ? error.message : String(error))
   }
 })
 
+export type SearchFilterInput = string | string[] | ParsedQs | ParsedQs[] | undefined | Record<string, string | string[] | ParsedQs | ParsedQs[] | null>
+
 export function filterSchema(
-  filters: string | string[] | ParsedQs | ParsedQs[],
+  filters: SearchFilterInput,
   options?: FilterSchemaOptions,
 ): FilterSchema {
   options = { ...DEFAULT_SCHEMA_OPTIONS, ...options }
-  let conditions = {}
-  if (typeof filters === 'object') {
-    for (const key of Object.keys(filters)) {
-      const data = filters[key]
+  let conditions: FilterSchema = {}
+  if (typeof filters === 'object' && filters !== null && !Array.isArray(filters)) {
+    const record = filters as Record<string, string | string[] | ParsedQs | ParsedQs[] | null>
+    for (const key of Object.keys(record)) {
+      const data = record[key]
       conditions = merge(conditions, internalFilterbyType(key, data, DEFAULT_ALLOWED_FILTERS, options), {
         isMergeableObject: isPlainObject,
-      })
+      }) as FilterSchema
     }
   }
   return conditions
@@ -89,16 +87,16 @@ export function filterSchema(
 
 function internalFilterbyType(
   key: string,
-  data: string,
+  data: unknown,
   allowed: string[],
   options: FilterSchemaOptions,
-) {
-  const parsed = {}
+): FilterSchema {
+  const parsed: FilterSchema = {}
   const keyCheck = key.replace(new RegExp(`[${allowed.join('')}]`, 'g'), '')
   if (keyCheck.length === 0 || (!allowed.includes(key[0]) && !/[a-zA-Z0-9-_]/.test(key[0]))) return {}
   switch (key[0]) {
     case FILTER_SYMBOL_BOOLEAN: {
-      parsed[key.slice(1)] = /true|on|yes|1/i.test(data)
+      parsed[key.slice(1)] = asFilterSchema(/true|on|yes|1/i.test(`${data}`))
       break
     }
 
@@ -109,7 +107,7 @@ function internalFilterbyType(
         Logger.verbose(`Invalid filter key ${keyCheck} with number: ${data}`, options.loggerType)
         break
       }
-      parsed[key.slice(1)] = valueHashtag
+      parsed[key.slice(1)] = asFilterSchema(valueHashtag)
       break
     }
 
@@ -134,7 +132,7 @@ function internalFilterbyType(
       let upperLowerType = key[0] === FILTER_SYMBOL_GREATER ? '$gt' : '$lt'
       if (key[1] === '|') upperLowerType = `${upperLowerType}e`
       const upperLowerKey = key.slice(upperLowerType.length - 2)
-      const valueGreater = internalFiltersByTypeUpperLower(upperLowerType, upperLowerKey, data, options)
+      const valueGreater = internalFiltersByTypeUpperLower(upperLowerType, upperLowerKey, `${data}`, options)
       if (Object.keys(valueGreater).length === 0) break
       const subKeyGreater = Object.keys(valueGreater)[0]
       // parsed[subKeyGreater] = { ...parsed[subKeyGreater], ...valueGreater[subKeyGreater] }
@@ -143,7 +141,7 @@ function internalFilterbyType(
     }
 
     case FILTER_SYMBOL_REGEX: {
-      const re = data.trim().split('/')
+      const re = `${data}`.trim().split('/')
       if (re[0] !== '' || re.length < 3) {
         if (options.strict) throw new Error(`Invalid filter key ${keyCheck} with regex: ${data}`)
         Logger.verbose(`Invalid filter key ${keyCheck} with regex: ${data}`, options.loggerType)
@@ -151,8 +149,8 @@ function internalFilterbyType(
       }
       re.shift()
       const $options = re.pop()
-      parsed[key.slice(1)] = { $regex: re.join('') }
-      if ($options) parsed[key.slice(1)]['$options'] = $options
+      parsed[key.slice(1)] = asFilterSchema({ $regex: re.join('') })
+      if ($options) parsed[key.slice(1)]['$options'] = asFilterSchema($options)
       break
     }
 
@@ -175,7 +173,7 @@ function internalFilterbyType(
         Logger.verbose(`Invalid filter key ${keyCheck} with array: ${JSON.stringify(data)}`, options.loggerType)
         break
       }
-      parsed[subKeyAt] = { $in }
+      parsed[subKeyAt] = asFilterSchema({ $in })
       break
     }
 
@@ -186,17 +184,17 @@ function internalFilterbyType(
         break
       }
 
-      if (options.convertObjectId && ObjectId.isValid(data)) {
-        parsed[key.slice(1)] = new ObjectId(data)
+      if (options.convertObjectId && Types.ObjectId.isValid(`${data}`)) {
+        parsed[key.slice(1)] = asFilterSchema(new Types.ObjectId(`${data}`))
         break
       }
 
       if (options.convertNull && data === 'null') {
-        parsed[key.slice(1)] = null
+        parsed[key.slice(1)] = asFilterSchema(null)
         break
       }
 
-      parsed[key.slice(1)] = `${data}`
+      parsed[key.slice(1)] = asFilterSchema(`${data}`)
       break
     }
 
@@ -206,7 +204,7 @@ function internalFilterbyType(
         Logger.verbose(`Invalid filter key ${keyCheck} with unsafe: ${JSON.stringify(data)}`, options.loggerType)
         break
       }
-      parsed[key] = data
+      parsed[key] = asFilterSchema(data)
       break
     }
   }
@@ -217,9 +215,9 @@ function internalFiltersByTypeUpperLower(
   type: string,
   key: string,
   data: string,
-  options?: FilterSchemaOptions,
+  options: FilterSchemaOptions,
 ): FilterSchema {
-  const parsed = {}
+  const parsed: FilterSchema = {}
   if (key[0] !== FILTER_SYMBOL_NUMBER) {
     const dayjsDate = dayjs(data, options.dayjsLocale)
     if (!dayjsDate.isValid() || dayjsDate.toDate().toString() === 'Invalid Date') {
@@ -228,7 +226,7 @@ function internalFiltersByTypeUpperLower(
       return {}
     }
     parsed[key] = {}
-    parsed[key][type] = dayjsDate.toDate()
+    parsed[key][type] = asFilterSchema(dayjsDate.toDate())
     return parsed
   }
 
@@ -238,7 +236,7 @@ function internalFiltersByTypeUpperLower(
   const subKey = Object.keys(value)[0]
   parsed[subKey] = {}
   parsed[subKey][type] = {}
-  parsed[subKey][type] = value[subKey]
+  parsed[subKey][type] = asFilterSchema(value[subKey])
 
   return parsed
 }

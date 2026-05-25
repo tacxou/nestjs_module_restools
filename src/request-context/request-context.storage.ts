@@ -5,7 +5,7 @@ export class RequestContextStorage<TReq = any, TRes = any> {
 
   public constructor(public readonly req: TReq, public readonly res: TRes) { }
 
-  public static get currentContext(): RequestContextStorage {
+  public static get currentContext(): RequestContextStorage | undefined {
     return this.storage.getStore()
   }
 }

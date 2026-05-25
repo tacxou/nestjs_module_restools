@@ -5,7 +5,7 @@ export interface TestRequest {
 }
 
 export class TestContext {
-  static get(): RequestContextStorage<TestRequest> {
+  static get(): RequestContextStorage<TestRequest> | undefined {
     return RequestContextStorage.currentContext
   }
 }

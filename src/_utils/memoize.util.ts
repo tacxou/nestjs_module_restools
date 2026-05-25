@@ -1,17 +1,17 @@
 const defaultKey = 'default'
 
-export function memoize(fn: Function) {
-  const cache = {}
+export function memoize<T>(fn: (type?: string | string[]) => T): (type?: string | string[]) => T {
+  const cache: Record<string, T> = {}
 
-  return (...args) => {
-    const n = args[0] || defaultKey
+  return (type?: string | string[]) => {
+    const cacheKey = type === undefined ? defaultKey : (Array.isArray(type) ? type.join('\0') : type)
 
-    if (n in cache) {
-      return cache[n]
-    } else {
-      const result = fn(n === defaultKey ? undefined : n)
-      cache[n] = result
-      return result
+    if (cacheKey in cache) {
+      return cache[cacheKey]
     }
+
+    const result = fn(type)
+    cache[cacheKey] = result
+    return result
   }
 }

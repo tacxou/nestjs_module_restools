@@ -21,6 +21,9 @@ Simple tools for NestJS framework and REST APIs
 ## Install dependencies
 ```bash
 yarn add @tacxou/nestjs_module_restools
+
+# Optionnal for search filter schema
+yarn add @nestjs/mongoose mongoose
 ```
 
 ## Usages

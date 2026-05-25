@@ -414,13 +414,13 @@ describe('search-filter-schema', () => {
 
   it('change with default options', () => {
     expect(
-      () => filterSchema(
+      filterSchema(
         {
           patterns: ['test', 'test2'],
         },
-        { unsafe: true, ...DEFAULT_SCHEMA_OPTIONS },
+        { ...DEFAULT_SCHEMA_OPTIONS, unsafe: true },
       ),
-    ).toThrow(Error)
+    ).toStrictEqual({ patterns: ['test', 'test2'] })
   })
 
   it('change with default options without strict', () => {

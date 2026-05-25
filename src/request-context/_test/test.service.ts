@@ -10,6 +10,6 @@ export class TestService {
   }
 
   public getRequestId() {
-    return TestContext.get().req.requestId
+    return TestContext.get()!.req.requestId
   }
 }
