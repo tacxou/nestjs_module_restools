@@ -9,9 +9,9 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/org/The-Software-Compagny"><img src="https://img.shields.io/npm/v/@the-software-compagny/nestjs_module_restools.svg" alt="NPM Version" /></a>
-  <a href="https://www.npmjs.com/org/The-Software-Compagny"><img src="https://img.shields.io/npm/l/@the-software-compagny/nestjs_module_restools.svg" alt="Package License" /></a>
-  <a href="https://github.com/The-Software-Compagny/nestjs_module_rcon/actions/workflows/ci.yml"><img src="https://github.com/The-Software-Compagny/nestjs_module_restools/actions/workflows/ci.yml/badge.svg" alt="Publish Package to npmjs" /></a>
+  <a href="https://www.npmjs.com/org/tacxou"><img src="https://img.shields.io/npm/v/@tacxou/nestjs_module_restools.svg" alt="NPM Version" /></a>
+  <a href="https://www.npmjs.com/org/tacxou"><img src="https://img.shields.io/npm/l/@tacxou/nestjs_module_restools.svg" alt="Package License" /></a>
+  <a href="https://github.com/tacxou/nestjs_module_rcon/actions/workflows/ci.yml"><img src="https://github.com/tacxou/nestjs_module_restools/actions/workflows/ci.yml/badge.svg" alt="Publish Package to npmjs" /></a>
 </p>
 <br>
 
@@ -20,7 +20,7 @@ Simple tools for NestJS framework and REST APIs
 
 ## Install dependencies
 ```bash
-yarn add @the-software-compagny/nestjs_module_restools
+yarn add @tacxou/nestjs_module_restools
 ```
 
 ## Usages
