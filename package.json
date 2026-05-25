@@ -32,6 +32,7 @@
     "class-transformer": "^0.5.1",
     "dayjs": "^1.11.11",
     "deepmerge": "^4.3.1",
+    "request-ip": "^3.3.0",
     "is-plain-object": "^5.0.0"
   },
   "devDependencies": {
@@ -55,7 +56,6 @@
     "passport-local": "^1.0.0",
     "prettier": "^3.3.2",
     "reflect-metadata": "^0.2.2",
-    "request-ip": "^3.3.0",
     "rimraf": "^5.0.7",
     "rxjs": "^7.8.1",
     "supertest": "^7.0.0",
