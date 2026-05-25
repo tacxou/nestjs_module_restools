@@ -38,16 +38,16 @@ export class DtoValidationPipe extends ValidationPipe {
   }
 
   protected validationRecursive(error: ValidationError, prefix = ''): ValidationRecursive {
-    let validations = {}
+    let validations: Record<string, string> = {}
     if (error.constraints) {
       validations[`${prefix + error.property}`] = Object.values(error.constraints)[0]
     }
-    if (error.children.length > 0) {
+    if (error.children && error.children.length > 0) {
       for (const errorChild of error.children) {
         if (errorChild.constraints) {
           validations[`${prefix + error.property}.${errorChild.property}`] = Object.values(errorChild.constraints)[0]
         }
-        if (errorChild.children.length > 0) {
+        if (errorChild.children && errorChild.children.length > 0) {
           validations = { ...validations, ...this.validationRecursive(errorChild, `${prefix + error.property}.${errorChild.property}.`) }
         }
       }

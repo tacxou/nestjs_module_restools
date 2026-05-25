@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true
+  },
+  "include": ["src/mongoose/abstract.service.schema.typetest.ts"],
+  "exclude": ["node_modules"]
+}

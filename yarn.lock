@@ -937,6 +937,13 @@
     path-to-regexp "8.4.2"
     tslib "2.8.1"
 
+"@nestjs/event-emitter@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/event-emitter/-/event-emitter-3.1.0.tgz#d814b4c753d4fa1276f60d6fdcaeca907f0446eb"
+  integrity sha512-DOY/4XBGyIjYyOJKkO6jl1kzFE0ZfX0wV+M2HR5NWymPT9Z0zdCEcZGxTXXkoMRwPtglnvCGJALSjOpXPIcM3g==
+  dependencies:
+    eventemitter2 "6.4.9"
+
 "@nestjs/mongoose@^11":
   version "11.0.4"
   resolved "https://registry.yarnpkg.com/@nestjs/mongoose/-/mongoose-11.0.4.tgz#cab11cf15517fcf2e73323ca0cb5d3d6588c28f3"
@@ -2212,6 +2219,11 @@ etag@^1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==
+
+eventemitter2@6.4.9:
+  version "6.4.9"
+  resolved "https://registry.yarnpkg.com/eventemitter2/-/eventemitter2-6.4.9.tgz#41f2750781b4230ed58827bc119d293471ecb125"
+  integrity sha512-JEPTiaOt9f04oa6NOkc4aH+nVp5I3wEjpHbIPqfgCdD5v5bUzy7xQqwcVO2aDQgOWhI28da57HksMrzK9HlRxg==
 
 execa@^5.1.1:
   version "5.1.1"

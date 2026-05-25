@@ -30,8 +30,9 @@ export class AppClusterService {
     }
 
     if (cluster.isPrimary) {
-      Logger.log(`Master server started on <${process.pid}> with pid <${options.forks}> forks 🏁`, options.name)
-      for (let i = 0; i < options.forks; i++) {
+      const forks = options.forks ?? 1
+      Logger.log(`Master server started on <${process.pid}> with pid <${forks}> forks 🏁`, options.name)
+      for (let i = 0; i < forks; i++) {
         cluster.fork()
       }
 

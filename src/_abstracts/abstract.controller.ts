@@ -5,19 +5,24 @@ export interface AbstractControllerContext {
   [key: string | number]: any
 
   moduleRef?: ModuleRef
+  controllerName?: string
 }
 
 export abstract class AbstractController {
+  protected logger: Logger
   protected moduleRef?: ModuleRef
 
-  protected logger: Logger
+  private _customControllerName?: string
 
   public constructor(context?: AbstractControllerContext) {
     this.logger = new Logger(this.controllerName)
     this.moduleRef = context?.moduleRef
+
+    this._customControllerName = context?.controllerName
   }
 
   public get controllerName(): string {
-    return this.constructor.name.replace(/Controller$/, '')
+    if (!this.constructor.name) throw new Error('Controller name is not defined in ' + this.constructor.name)
+    return this._customControllerName || this.constructor.name.replace(/Controller$/, '')
   }
 }
