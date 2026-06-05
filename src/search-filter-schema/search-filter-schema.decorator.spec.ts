@@ -127,6 +127,24 @@ describe('search-filter-schema', () => {
     ).toStrictEqual({ patterns: { $in: ['poulet', 'cotcot'] } })
   })
 
+  it('test in string filter with csv', () => {
+    expect(
+      filterSchema({
+        '@patterns': 'rch,ext,sna,ass',
+      }),
+    ).toStrictEqual({ patterns: { $in: ['rch', 'ext', 'sna', 'ass'] } })
+  })
+
+  it('test in string filter with csv on nested key', () => {
+    expect(
+      filterSchema({
+        '@additionalFields.attributes.supannPerson.supannTypeEntiteAffectation': 'rch,ext,sna,ass',
+      }),
+    ).toStrictEqual({
+      'additionalFields.attributes.supannPerson.supannTypeEntiteAffectation': { $in: ['rch', 'ext', 'sna', 'ass'] },
+    })
+  })
+
   it('test in bad array number', () => {
     expect(
       filterSchema({

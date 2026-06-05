@@ -157,12 +157,14 @@ function internalFilterbyType(
     case FILTER_SYMBOL_IN: {
       let subKeyAt
       const $in = []
-      if (!Array.isArray(data)) {
+      const normalizedData =
+        Array.isArray(data) ? data : typeof data === 'string' && data.includes(',') ? data.split(',').map((s) => s.trim()).filter(Boolean) : null
+      if (!Array.isArray(normalizedData)) {
         if (options.strict) throw new Error(`Invalid filter key ${keyCheck} with bad array: ${data}`)
         Logger.verbose(`Invalid filter key ${keyCheck} with bad array: ${data}`, options.loggerType)
         break
       }
-      for (const d of data) {
+      for (const d of normalizedData) {
         const valueAt = internalFilterbyType(key.slice(1), d, [FILTER_SYMBOL_NUMBER], options)
         if (Object.keys(valueAt).length === 0) break
         subKeyAt = Object.keys(valueAt)[0]
