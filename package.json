@@ -1,6 +1,6 @@
 {
   "name": "@tacxou/nestjs_module_restools",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Simple tools for NestJS framework and REST APIs",
   "repository": {
     "type": "git",
