@@ -14,6 +14,7 @@ export const FILTER_SYMBOL_IN = '@'
 export const FILTER_SYMBOL_REGEX = '^'
 export const FILTER_SYMBOL_BOOLEAN = '?'
 export const FILTER_SYMBOL_NUMBER = '#'
+export const FILTER_SYMBOL_NOT_EMPTY = '~'
 
 export const DEFAULT_ALLOWED_FILTERS = [
   FILTER_SYMBOL_EQUAL,
@@ -24,6 +25,7 @@ export const DEFAULT_ALLOWED_FILTERS = [
   FILTER_SYMBOL_LESS,
   FILTER_SYMBOL_REGEX,
   FILTER_SYMBOL_IN,
+  FILTER_SYMBOL_NOT_EMPTY,
 ]
 
 export const DEFAULT_SCHEMA_OPTIONS = {
@@ -124,6 +126,15 @@ function internalFilterbyType(
         break
       }
       parsed[keyCheck] = { $ne: valueExclamation[keyCheck] }
+      break
+    }
+
+    case FILTER_SYMBOL_NOT_EMPTY: {
+      if (/true|on|yes|1/i.test(data)) {
+        parsed[key.slice(1)] = { $exists: true, $nin: [null, ''] }
+      } else {
+        parsed[key.slice(1)] = { $exists: true, $in: [null, ''] }
+      }
       break
     }
 
