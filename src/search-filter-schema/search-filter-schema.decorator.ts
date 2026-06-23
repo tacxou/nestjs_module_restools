@@ -130,10 +130,10 @@ function internalFilterbyType(
     }
 
     case FILTER_SYMBOL_NOT_EMPTY: {
-      if (/true|on|yes|1/i.test(data)) {
-        parsed[key.slice(1)] = { $exists: true, $nin: [null, ''] }
+      if (/true|on|yes|1/i.test(`${data}`)) {
+        parsed[key.slice(1)] = asFilterSchema({ $exists: true, $nin: [null, ''] })
       } else {
-        parsed[key.slice(1)] = { $exists: true, $in: [null, ''] }
+        parsed[key.slice(1)] = asFilterSchema({ $exists: true, $in: [null, ''] })
       }
       break
     }

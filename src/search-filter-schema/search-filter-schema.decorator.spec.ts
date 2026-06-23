@@ -78,6 +78,22 @@ describe('search-filter-schema', () => {
     ).toStrictEqual({ active: true })
   })
 
+  it('test not empty filter with true', () => {
+    expect(
+      filterSchema({
+        '~primaryEmployeeNumber': 'true',
+      }),
+    ).toStrictEqual({ primaryEmployeeNumber: { $exists: true, $nin: [null, ''] } })
+  })
+
+  it('test not empty filter with false', () => {
+    expect(
+      filterSchema({
+        '~primaryEmployeeNumber': 'false',
+      }),
+    ).toStrictEqual({ primaryEmployeeNumber: { $exists: true, $in: [null, ''] } })
+  })
+
   it('test int filter', () => {
     expect(
       filterSchema({
